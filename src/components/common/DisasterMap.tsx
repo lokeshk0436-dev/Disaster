@@ -38,10 +38,10 @@ export const DisasterMap: React.FC = () => {
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-      // Dark tactical carto basemap
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a> OpenStreetMap contributors',
-        maxZoom: 18
+      // Clean free OpenStreetMap tile basemap (no API key required)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
       }).addTo(map);
 
       markersLayerRef.current = L.layerGroup().addTo(map);

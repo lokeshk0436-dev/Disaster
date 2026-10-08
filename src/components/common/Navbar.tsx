@@ -16,13 +16,24 @@ import {
   SlidersHorizontal,
   ChevronDown,
   Layers,
+  PhoneCall,
+  Sparkles,
   Database,
   LogOut
 } from 'lucide-react';
 
-export const Navbar: React.FC<{ onOpenOfflineQueue: () => void; onOpenAuditLogs: () => void }> = ({
+interface NavbarProps {
+  onOpenOfflineQueue: () => void;
+  onOpenAuditLogs: () => void;
+  onOpenHelplines?: () => void;
+  onOpenVoiceAssistant?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
   onOpenOfflineQueue,
-  onOpenAuditLogs
+  onOpenAuditLogs,
+  onOpenHelplines,
+  onOpenVoiceAssistant
 }) => {
   const {
     currentRole,
@@ -198,6 +209,30 @@ export const Navbar: React.FC<{ onOpenOfflineQueue: () => void; onOpenAuditLogs:
             >
               <Database className="w-3 h-3" />
               <span>{syncQueue.length} Queued</span>
+            </button>
+          )}
+
+          {/* Emergency 24/7 Helplines Quick Trigger */}
+          {onOpenHelplines && (
+            <button
+              onClick={onOpenHelplines}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/40 hover:border-rose-400 transition-all cursor-pointer shadow-sm active:scale-95"
+              title="Open 24/7 Emergency Helplines Directory (112, 1078, 108)"
+            >
+              <PhoneCall className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
+              <span className="font-mono text-[11px]">112 SOS</span>
+            </button>
+          )}
+
+          {/* AI Voice Copilot Trigger */}
+          {onOpenVoiceAssistant && (
+            <button
+              onClick={onOpenVoiceAssistant}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 transition-all cursor-pointer shadow-sm active:scale-95"
+              title="Launch AI Voice Assistant (Siri / Gemini audio copilot)"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="font-mono text-[11px]">AI Copilot</span>
             </button>
           )}
 

@@ -6,6 +6,9 @@ import { OfflineQueueModal } from './components/common/OfflineQueueModal';
 import { AuditLogDrawer } from './components/common/AuditLogDrawer';
 import { ReunificationModal } from './components/common/ReunificationModal';
 import { PublicInfoModal } from './components/common/PublicInfoModal';
+import { EmergencyFooter } from './components/common/EmergencyFooter';
+import { HelplinesDrawer } from './components/common/HelplinesDrawer';
+import { AypoVoiceAssistant } from './components/common/AypoVoiceAssistant';
 
 // Portals
 import { FamilyPortal } from './components/portals/family/FamilyPortal';
@@ -22,6 +25,8 @@ const AppContent: React.FC = () => {
   const [isQueueOpen, setIsQueueOpen] = useState(false);
   const [isAuditLogsOpen, setIsAuditLogsOpen] = useState(false);
   const [isPublicInfoOpen, setIsPublicInfoOpen] = useState(false);
+  const [isHelplinesOpen, setIsHelplinesOpen] = useState(false);
+  const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
 
   // If user is not authenticated, display the Login & Registration Gateway
   if (!isAuthenticated) {
@@ -34,6 +39,8 @@ const AppContent: React.FC = () => {
       <Navbar
         onOpenOfflineQueue={() => setIsQueueOpen(true)}
         onOpenAuditLogs={() => setIsAuditLogsOpen(true)}
+        onOpenHelplines={() => setIsHelplinesOpen(true)}
+        onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
       />
 
       {/* Telemetry & Connectivity Bar */}
@@ -41,7 +48,12 @@ const AppContent: React.FC = () => {
 
       {/* Main Role-Based Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {currentRole === 'FAMILY' && <FamilyPortal />}
+        {currentRole === 'FAMILY' && (
+          <FamilyPortal
+            onOpenHelplines={() => setIsHelplinesOpen(true)}
+            onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
+          />
+        )}
         {currentRole === 'PUBLIC_SERVICE' && (
           <PublicServicePortal onOpenQueue={() => setIsQueueOpen(true)} />
         )}
@@ -56,48 +68,13 @@ const AppContent: React.FC = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#091124] border-t border-slate-800 text-xs text-slate-400 py-6 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 font-bold">
-              <img src="/aypo-logo.svg" alt="AYPO" className="w-5 h-5 object-contain" />
-            </div>
-            <div>
-              <div className="font-bold text-white flex items-center gap-2">
-                <span>AYPO</span>
-                <span className="text-[10px] text-cyan-400 uppercase tracking-widest font-mono">
-                  DISASTER REUNIFICATION PLATFORM
-                </span>
-              </div>
-              <div className="text-[11px] text-slate-400 font-medium">
-                National Disaster Management & Civilian Reunification Network • Public Safety Deployment
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 text-[11px]">
-            <button
-              onClick={() => setIsPublicInfoOpen(true)}
-              className="text-slate-300 hover:text-cyan-300 font-semibold flex items-center gap-1 transition-colors"
-            >
-              <Info className="w-3.5 h-3.5 text-cyan-400" /> Platform Architecture
-            </button>
-            <span>•</span>
-            <button
-              onClick={() => setIsAuditLogsOpen(true)}
-              className="text-slate-300 hover:text-purple-300 font-semibold transition-colors"
-            >
-              Security Ledger
-            </button>
-            <span>•</span>
-            <span className="text-slate-400 flex items-center gap-1 font-mono">
-              <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-              <span>Offline-First PWA Active</span>
-            </span>
-          </div>
-        </div>
-      </footer>
+      {/* High-Contrast Tactical Emergency Footer */}
+      <EmergencyFooter
+        onOpenPublicInfo={() => setIsPublicInfoOpen(true)}
+        onOpenAuditLogs={() => setIsAuditLogsOpen(true)}
+        onOpenHelplines={() => setIsHelplinesOpen(true)}
+        onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
+      />
 
       {/* Modals & Drawers */}
       <OfflineQueueModal
@@ -119,6 +96,20 @@ const AppContent: React.FC = () => {
         isOpen={!!reunionModalCase}
         caseRecord={reunionModalCase}
         onClose={closeReunionModal}
+      />
+
+      {/* 24/7 Helplines & Disaster Insights Drawer */}
+      <HelplinesDrawer
+        isOpen={isHelplinesOpen}
+        onClose={() => setIsHelplinesOpen(false)}
+      />
+
+      {/* Siri / Gemini AI Voice Assistant */}
+      <AypoVoiceAssistant
+        isOpen={isVoiceAssistantOpen}
+        onOpen={() => setIsVoiceAssistantOpen(true)}
+        onClose={() => setIsVoiceAssistantOpen(false)}
+        onOpenHelplines={() => setIsHelplinesOpen(true)}
       />
     </div>
   );

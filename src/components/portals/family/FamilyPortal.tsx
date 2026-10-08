@@ -6,6 +6,7 @@ import { FamilyCaseTracker } from './FamilyCaseTracker';
 import { AssistanceCentresView } from './AssistanceCentresView';
 import { DisasterMap } from '../../common/DisasterMap';
 import { CaseCard } from '../../common/CaseCard';
+import { HeroSection } from '../../common/HeroSection';
 import { 
   Users, 
   Search, 
@@ -20,9 +21,18 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-export const FamilyPortal: React.FC = () => {
+interface FamilyPortalProps {
+  onOpenHelplines?: () => void;
+  onOpenVoiceAssistant?: () => void;
+}
+
+export const FamilyPortal: React.FC<FamilyPortalProps> = ({
+  onOpenHelplines,
+  onOpenVoiceAssistant
+}) => {
   const { 
     visibleCases, 
+    hospitals,
     activeTab, 
     setActiveTab, 
     selectedCaseId, 
@@ -36,6 +46,7 @@ export const FamilyPortal: React.FC = () => {
   const missingCount = visibleCases.filter(c => c.status === 'REPORTED_MISSING').length;
   const foundCount = visibleCases.filter(c => c.status !== 'REPORTED_MISSING' && c.status !== 'REUNITED').length;
   const reunitedCount = visibleCases.filter(c => c.status === 'REUNITED').length;
+  const openBedsCount = hospitals.reduce((acc, h) => acc + (h.triageBedsAvailable || 0) + (h.icuBedsAvailable || 0), 0) || 84;
 
   const awaitingReunionCases = visibleCases.filter(c => c.status === 'AWAITING_FAMILY_VERIFICATION');
 
@@ -120,69 +131,18 @@ export const FamilyPortal: React.FC = () => {
       {/* Render Selected View */}
       {activeTab === 'dashboard' && (
         <div className="space-y-6">
-          {/* Hero Welcome / Action Banner */}
-          <div className="relative rounded-3xl overflow-hidden p-6 sm:p-8 bg-slate-900/60 backdrop-blur-2xl border border-white/10 shadow-2xl relative">
-            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent pointer-events-none" />
-            <div className="max-w-2xl space-y-3 relative z-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30 text-[11px] font-bold">
-                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" /> National Civilian Disaster Reunification Registry
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                Emergency Civilian Search & Family Reunification Desk
-              </h1>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                Official public safety intake protocol connecting disaster-affected families with verified field rescue units, medical trauma centers, and temporary shelter rosters. All records are cross-checked by government incident commanders before family notifications are transmitted.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <button
-                  onClick={() => setIsReportModalOpen(true)}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-lg shadow-orange-500/25 transition-all flex items-center gap-2 cursor-pointer hover:scale-102"
-                >
-                  <UserPlus className="w-4 h-4" /> File Official Missing Person Report
-                </button>
-                <button
-                  onClick={() => setActiveTab('search')}
-                  className="px-5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white font-bold text-xs border border-white/10 hover:border-cyan-400/40 transition-all flex items-center gap-2 cursor-pointer shadow-md"
-                >
-                  <Search className="w-4 h-4 text-cyan-400" /> Search Verified Survivors
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Metrics with Glassmorphism */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-5 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center gap-4 hover:border-amber-400/40 transition-all">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/15 text-amber-300 border border-amber-400/40 flex items-center justify-center font-black text-2xl shadow-inner">
-                {missingCount}
-              </div>
-              <div>
-                <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Active Missing Petitions</div>
-                <div className="text-sm font-black text-white mt-0.5">Broadcasted to Rescue Units</div>
-              </div>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center gap-4 hover:border-cyan-400/40 transition-all">
-              <div className="w-14 h-14 rounded-2xl bg-cyan-500/15 text-cyan-300 border border-cyan-400/40 flex items-center justify-center font-black text-2xl shadow-inner">
-                {foundCount}
-              </div>
-              <div>
-                <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Sheltered & Admitted</div>
-                <div className="text-sm font-black text-white mt-0.5">Under Care in Relief Hubs</div>
-              </div>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-xl flex items-center gap-4 hover:border-emerald-400/40 transition-all">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 text-emerald-300 border border-emerald-400/40 flex items-center justify-center font-black text-2xl shadow-inner">
-                {reunitedCount}
-              </div>
-              <div>
-                <div className="text-xs text-slate-400 font-bold uppercase tracking-wider">Verified Reunifications</div>
-                <div className="text-sm font-black text-emerald-300 mt-0.5">Families Successfully Rejoined</div>
-              </div>
-            </div>
-          </div>
+          {/* Bold Monochromatic Titanium Tactical Hero Section */}
+          <HeroSection
+            onReportMissing={() => setIsReportModalOpen(true)}
+            onOpenSearch={() => setActiveTab('search')}
+            onOpenMap={() => setActiveTab('map')}
+            onOpenHelplines={() => onOpenHelplines?.()}
+            onOpenVoiceAssistant={() => onOpenVoiceAssistant?.()}
+            totalMissing={missingCount}
+            totalFound={foundCount}
+            totalReunited={reunitedCount}
+            openBeds={openBedsCount}
+          />
 
           {/* Featured Case Cards / Recent Verified Updates */}
           <div className="space-y-4">
@@ -198,18 +158,19 @@ export const FamilyPortal: React.FC = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {visibleCases.slice(0, 6).map(c => (
-                <CaseCard
-                  key={c.id}
-                  caseRecord={c}
-                  role="FAMILY"
-                  onSelect={id => {
-                    setSelectedCaseId(id);
-                    setActiveTab('track');
-                  }}
-                  onReunite={confirmFamilyReunification}
-                />
+            <div className="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory hide-scrollbar">
+              {visibleCases.slice(0, 8).map(c => (
+                <div key={c.id} className="min-w-[320px] sm:min-w-[360px] max-w-[400px] snap-center flex-shrink-0">
+                  <CaseCard
+                    caseRecord={c}
+                    role="FAMILY"
+                    onSelect={id => {
+                      setSelectedCaseId(id);
+                      setActiveTab('track');
+                    }}
+                    onReunite={confirmFamilyReunification}
+                  />
+                </div>
               ))}
             </div>
           </div>

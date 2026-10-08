@@ -8,7 +8,8 @@ import {
   Sparkles,
   CheckCircle2, 
   AlertTriangle,
-  Clock
+  Clock,
+  Activity
 } from 'lucide-react';
 
 interface CaseCardProps {
@@ -92,120 +93,107 @@ export const CaseCard: React.FC<CaseCardProps> = ({
   return (
     <div 
       onClick={() => onSelect(caseRecord.id)}
-      className="group relative bg-slate-900/60 backdrop-blur-xl hover:bg-slate-800/80 border border-white/10 hover:border-cyan-400/50 rounded-3xl p-5 transition-all duration-300 cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-cyan-950/40 flex flex-col justify-between overflow-hidden hover:-translate-y-1"
+      className="group relative bg-[#090C14]/90 backdrop-blur-2xl border border-white/5 hover:border-cyan-500/40 rounded-2xl p-0 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-cyan-900/20 flex flex-col justify-between overflow-hidden hover:-translate-y-1 h-full"
     >
-      {/* Specular Ambient Glow Overlay */}
-      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-cyan-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      {/* Top Accent Line */}
+      <div className={`h-1 w-full absolute top-0 left-0 ${
+        caseRecord.triageLevel === 'RED' ? 'bg-rose-500' :
+        caseRecord.triageLevel === 'YELLOW' ? 'bg-amber-500' :
+        isReunited ? 'bg-emerald-500' : 'bg-cyan-500'
+      }`} />
 
-      <div>
-        {/* Top Header */}
-        <div className="flex items-center justify-between gap-2 mb-3.5">
-          <span className="font-mono text-cyan-400 font-bold text-xs tracking-wider group-hover:text-cyan-300 transition-colors bg-cyan-950/50 px-2 py-0.5 rounded-lg border border-cyan-500/30">
-            {caseRecord.id}
-          </span>
+      {/* Content Wrapper */}
+      <div className="p-4 sm:p-5 flex flex-col h-full">
+        {/* Header section */}
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/50 animate-pulse" />
+            <span className="font-mono text-slate-400 font-semibold text-[10px] tracking-widest">
+              ID: {caseRecord.id}
+            </span>
+          </div>
           {getStatusBadge()}
         </div>
 
-        {/* Content Body with Realistic Portrait */}
-        <div className="flex items-start gap-4 mb-3.5">
-          <div className="relative w-20 h-20 rounded-2xl overflow-hidden border border-white/15 bg-slate-950 flex-shrink-0 shadow-lg group-hover:border-cyan-400/50 transition-colors">
+        {/* Profile Section */}
+        <div className="flex items-start gap-4 mb-4">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-[#030508] flex-shrink-0 border border-white/10 group-hover:border-cyan-500/30 transition-colors">
             <img
               src={caseRecord.photoUrl}
               alt={caseRecord.personName}
-              className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+              className="w-full h-full object-cover filter contrast-125 saturate-50 group-hover:saturate-100 transition-all duration-500"
               onError={(e) => {
-                // High-fidelity fallback portrait
                 (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
               }}
             />
-            {caseRecord.syncStatus === 'QUEUED_LOCAL' && (
-              <span className="absolute bottom-0 inset-x-0 bg-amber-500/90 backdrop-blur-sm text-slate-950 text-[9px] font-black text-center py-0.5 tracking-wider">
-                OFFLINE PENDING
-              </span>
-            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           </div>
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-base font-extrabold text-white truncate group-hover:text-cyan-200 transition-colors">
+            <h3 className="text-lg font-black text-white truncate tracking-tight">
               {caseRecord.personName}
             </h3>
-            <div className="text-xs text-slate-300 font-medium flex items-center gap-1.5 mt-0.5">
-              <span>{caseRecord.age} yrs</span>
-              <span className="text-slate-600">•</span>
-              <span>{caseRecord.gender}</span>
-              {caseRecord.aliases.length > 0 && (
-                <>
-                  <span className="text-slate-600">•</span>
-                  <span className="truncate text-slate-400 text-[11px]">({caseRecord.aliases[0]})</span>
-                </>
-              )}
+            <div className="text-xs text-slate-400 flex items-center gap-2 mt-1">
+              <span>{caseRecord.age} YRS</span>
+              <span className="w-1 h-1 bg-slate-600 rounded-full" />
+              <span className="uppercase">{caseRecord.gender}</span>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs text-slate-300 mt-2 truncate bg-slate-950/40 backdrop-blur-sm px-2.5 py-1 rounded-xl border border-white/5">
-              <MapPin className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
-              <span className="truncate text-[11px] font-medium">{caseRecord.currentLocation}</span>
+            <div className="flex items-center gap-1.5 text-xs text-cyan-400 mt-2.5 bg-cyan-950/20 px-2 py-1 rounded border border-cyan-900/30 w-fit">
+              <MapPin className="w-3 h-3" />
+              <span className="truncate text-[10px] font-bold uppercase tracking-wider">{caseRecord.currentLocation}</span>
             </div>
           </div>
         </div>
 
-        {/* Physical Description Snippet (Glassmorphic) */}
-        {caseRecord.physicalDescription && (
-          <p className="text-xs text-slate-300 line-clamp-2 mb-3 bg-slate-950/50 backdrop-blur-md p-2.5 rounded-xl border border-white/5 leading-relaxed">
-            {caseRecord.physicalDescription}
-          </p>
-        )}
+        {/* Spacer to push footer down */}
+        <div className="flex-grow">
+          {/* Medical Triage Alert (Public Service & Government only) */}
+          {role !== 'FAMILY' && caseRecord.triageLevel && (
+            <div className="flex items-center gap-2 text-[10px] mb-3 px-3 py-1.5 rounded bg-[#030508] border border-white/5 w-fit">
+              <Activity className="w-3 h-3 text-slate-400" />
+              <span className="text-slate-400 uppercase tracking-widest">Triage:</span>
+              <span className={`font-black uppercase tracking-wider ${
+                caseRecord.triageLevel === 'RED' ? 'text-rose-400' :
+                caseRecord.triageLevel === 'YELLOW' ? 'text-amber-400' : 'text-emerald-400'
+              }`}>
+                {caseRecord.triageLevel}
+              </span>
+            </div>
+          )}
+        </div>
 
-        {/* Medical Triage Alert (Public Service & Government only) */}
-        {role !== 'FAMILY' && caseRecord.triageLevel && (
-          <div className="flex items-center justify-between text-[11px] mb-3 px-2.5 py-1 rounded-xl bg-slate-950/60 backdrop-blur-sm border border-white/10">
-            <span className="text-slate-400 font-medium">Triage Priority:</span>
-            <span className={`font-black ${
-              caseRecord.triageLevel === 'RED' ? 'text-rose-400' :
-              caseRecord.triageLevel === 'YELLOW' ? 'text-amber-400' : 'text-emerald-400'
-            }`}>
-              {caseRecord.triageLevel} SECTOR
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Footer Meta & Glassmorphic Actions */}
-      <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-        <div>
+        {/* Footer actions */}
+        <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs mt-auto">
           {getVerificationBadge()}
-        </div>
 
-        <div className="flex items-center gap-2">
-          {/* Family Reunion Action */}
-          {role === 'FAMILY' && isAwaitingVerification && onReunite && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onReunite(caseRecord.id);
-              }}
-              className="px-3 py-1 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all animate-bounce cursor-pointer"
-            >
-              Confirm Reunion
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {role === 'FAMILY' && isAwaitingVerification && onReunite && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onReunite(caseRecord.id);
+                }}
+                className="px-3 py-1.5 rounded bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] uppercase tracking-wider transition-all cursor-pointer"
+              >
+                Confirm Reunion
+              </button>
+            )}
 
-          {/* Government Verify Action */}
-          {role === 'GOVERNMENT' && !isVerified && onVerify && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onVerify(caseRecord.id);
-              }}
-              className="px-3 py-1 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md shadow-cyan-600/30 transition-all cursor-pointer"
-            >
-              Verify Case
-            </button>
-          )}
-
-          <span className="text-slate-400 group-hover:text-cyan-300 transition-colors flex items-center text-xs font-semibold">
-            Inspect <ChevronRight className="w-3.5 h-3.5 ml-0.5 group-hover:translate-x-0.5 transition-transform" />
-          </span>
+            {role === 'GOVERNMENT' && !isVerified && onVerify && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onVerify(caseRecord.id);
+                }}
+                className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer"
+              >
+                Verify
+              </button>
+            )}
+            
+            <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
+          </div>
         </div>
       </div>
     </div>

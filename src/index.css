@@ -4,79 +4,142 @@
 
 @layer base {
   :root {
-    --color-bg: #070D1E;
-    --color-surface: #0E1838;
-    --color-card: #132247;
-    --color-border: #223769;
-    --color-primary: #0077B6;
-    --color-accent: #00B4D8;
-    --color-success: #2A9D8F;
-    --color-warning: #FB8500;
-    --color-danger: #E63946;
+    --color-bg: #030508;
+    --color-surface: #090C14;
+    --color-card: #0F131D;
+    --color-border: #1E2536;
+    --color-primary: #00F0FF;
+    --color-accent: #38BDF8;
+    --color-success: #00E599;
+    --color-warning: #FFB800;
+    --color-danger: #FF2A55;
   }
 
   body {
-    background-color: #070D1E;
-    color: #F1F5F9;
+    background-color: #030508;
+    color: #F8FAFC;
     overflow-x: hidden;
+    font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
   }
+}
+
+/* Tactical Background Carbon Dot Grid Texture */
+.carbon-grid {
+  background-color: #030508;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                    radial-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* High Contrast Monochromatic Glass */
+.mono-glass {
+  background: rgba(12, 16, 24, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mono-glass-hover:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Siri / Gemini AI Voice Glowing Pulsar */
+.siri-orb {
+  background: radial-gradient(circle at 35% 35%, #00F0FF 0%, #6366F1 45%, #EC4899 75%, #050508 100%);
+  animation: siriGlow 3s ease-in-out infinite alternate;
+}
+
+.voice-wave-bar {
+  width: 3.5px;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #00F0FF, #EC4899);
+  animation: voiceWave 1s ease-in-out infinite alternate;
 }
 
 /* Custom Emergency Glow & Glass Classes */
 .emergency-glass {
-  background: rgba(17, 29, 63, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(72, 202, 228, 0.15);
+  background: rgba(10, 14, 22, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .emergency-glass-danger {
-  background: rgba(45, 10, 20, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(230, 57, 70, 0.35);
+  background: rgba(45, 8, 16, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 42, 85, 0.4);
 }
 
 .emergency-glass-warning {
-  background: rgba(45, 30, 10, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(251, 133, 0, 0.35);
+  background: rgba(45, 28, 8, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 184, 0, 0.4);
 }
 
 .emergency-glass-success {
-  background: rgba(10, 45, 35, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(42, 157, 143, 0.35);
+  background: rgba(8, 45, 28, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 229, 153, 0.4);
 }
 
 .badge-glow {
-  box-shadow: 0 0 12px currentColor;
+  box-shadow: 0 0 14px currentColor;
 }
 
 /* High Contrast Emergency Mode Overrides */
 body.emergency-mode {
-  background-color: #030712 !important;
+  background-color: #000000 !important;
 }
 
 body.emergency-mode .emergency-glass {
-  background: #111827 !important;
-  border: 2px solid #38BDF8 !important;
+  background: #09090C !important;
+  border: 2px solid #FFFFFF !important;
 }
 
-/* Custom Tactical Scrollbar */
+/* Custom Tactical Monochromatic Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B132B;
+  background: #05070E;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2E3D66;
+  background: #1E2536;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00B4D8;
+  background: #00F0FF;
 }
+
+/* Hide scrollbar for horizontal scrolling containers */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Animated Grid Background */
+@keyframes backgroundPan {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: -200% 0%;
+  }
+}
+
+.bg-animated-grid {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: backgroundPan 30s linear infinite;
+}
+
