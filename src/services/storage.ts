@@ -1,5 +1,6 @@
 import { AYPOCase, SyncQueueItem, AuditLog, NotificationItem, UserProfile } from '../types';
 import { INITIAL_CASES, INITIAL_AUDIT_LOGS, INITIAL_NOTIFICATIONS, INITIAL_USERS } from './seedData';
+import { firestoreService } from './firestoreService';
 
 const STORAGE_KEYS = {
   CASES: 'aypo_cases_v1',
@@ -30,6 +31,7 @@ export const storageService = {
   saveCases(cases: AYPOCase[]): void {
     try {
       localStorage.setItem(STORAGE_KEYS.CASES, JSON.stringify(cases));
+      cases.forEach(c => firestoreService.saveCase(c));
     } catch (e) {
       console.warn('Local storage write warning', e);
     }
@@ -83,6 +85,7 @@ export const storageService = {
 
   saveAuditLogs(logs: AuditLog[]): void {
     localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(logs));
+    logs.forEach(l => firestoreService.saveAuditLog(l));
   },
 
   addAuditLog(log: Omit<AuditLog, 'id' | 'when'>): AuditLog {

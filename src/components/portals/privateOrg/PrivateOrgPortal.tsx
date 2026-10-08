@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAypo } from '../../../context/AypoContext';
 import { ReportFoundModal } from './ReportFoundModal';
 import { SubmitMatchModal } from './SubmitMatchModal';
+import { ProvideFundsModal } from './ProvideFundsModal';
 import { AssignedCasesView } from './AssignedCasesView';
 import { DisasterMap } from '../../common/DisasterMap';
 import { CaseCard } from '../../common/CaseCard';
@@ -15,7 +16,8 @@ import {
   ArrowRight,
   Database,
   LogOut,
-  Activity
+  Activity,
+  Banknote
 } from 'lucide-react';
 
 export const PrivateOrgPortal: React.FC<{ onOpenQueue: () => void }> = ({ onOpenQueue }) => {
@@ -31,6 +33,7 @@ export const PrivateOrgPortal: React.FC<{ onOpenQueue: () => void }> = ({ onOpen
 
   const [isReportFoundOpen, setIsReportFoundOpen] = useState(false);
   const [isSubmitMatchOpen, setIsSubmitMatchOpen] = useState(false);
+  const [isProvideFundsOpen, setIsProvideFundsOpen] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -80,6 +83,14 @@ export const PrivateOrgPortal: React.FC<{ onOpenQueue: () => void }> = ({ onOpen
               <span className="hidden sm:inline">Offline Queue ({syncQueue.length})</span>
             </button>
           )}
+
+          <button
+            onClick={() => setIsProvideFundsOpen(true)}
+            className="flex-shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold text-[13px] shadow-sm transition-all"
+          >
+            <Banknote className="w-4 h-4" />
+            <span className="hidden sm:inline">Provide Funds</span>
+          </button>
 
           <button
             onClick={() => setIsSubmitMatchOpen(true)}
@@ -187,6 +198,10 @@ export const PrivateOrgPortal: React.FC<{ onOpenQueue: () => void }> = ({ onOpen
       <SubmitMatchModal
         isOpen={isSubmitMatchOpen}
         onClose={() => setIsSubmitMatchOpen(false)}
+      />
+      <ProvideFundsModal
+        isOpen={isProvideFundsOpen}
+        onClose={() => setIsProvideFundsOpen(false)}
       />
     </div>
   );

@@ -16,6 +16,7 @@ import {
 } from '../types';
 import { INITIAL_USERS, INITIAL_SHELTERS, INITIAL_HOSPITALS } from '../services/seedData';
 import { storageService } from '../services/storage';
+import { firestoreService } from '../services/firestoreService';
 import { scanForAIMatches } from '../services/aiMatcher';
 import { sanitizeCaseForRole, filterCasesForRole } from '../services/dataIsolation';
 import { audioAlert } from '../services/audioAlert';
@@ -119,6 +120,28 @@ export const AypoProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
   const [demoStep, setDemoStep] = useState<number>(1);
   const [reunionModalCase, setReunionModalCase] = useState<AYPOCase | null>(null);
+
+  // Real-time Cloud Sync
+  useEffect(() => {
+    const unsubCases = firestoreService.subscribeToCases((cloudCases) => {
+      if (cloudCases.length > 0) {
+        setCases(cloudCases);
+        storageService.saveCases(cloudCases); // Backup to local
+      }
+    });
+
+    const unsubLogs = firestoreService.subscribeToAuditLogs((cloudLogs) => {
+      if (cloudLogs.length > 0) {
+        setAuditLogs(cloudLogs);
+        storageService.saveAuditLogs(cloudLogs);
+      }
+    });
+
+    return () => {
+      unsubCases();
+      unsubLogs();
+    };
+  }, []);
 
   // Authentication: Login
   const login = async (credentials: {

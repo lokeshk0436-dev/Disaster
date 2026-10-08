@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAypo } from '../../context/AypoContext';
 import { UserRole } from '../../types';
+import { auth } from '../../config/firebase';
+import { RecaptchaVerifier, signInWithPhoneNumber, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { 
   Users, 
   Ambulance, 
@@ -12,6 +14,13 @@ import {
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
+
+declare global {
+  interface Window {
+    recaptchaVerifier: any;
+    confirmationResult: any;
+  }
+}
 
 interface PortalDefinition {
   role: UserRole;
@@ -39,18 +48,41 @@ export const AuthScreen: React.FC = () => {
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Step 1: Send OTP
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (phoneNumber.replace(/\D/g, '').length < 8) {
       setErrorMsg('Please enter a valid mobile number.');
       return;
     }
     setErrorMsg('');
-    setOtpDigits(['', '', '', '', '', '']);
-    setPhoneStep('enter_otp');
-    setTimeout(() => {
-      otpInputRefs.current[0]?.focus();
-    }, 150);
+    setIsLoading(true);
+    
+    try {
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+          size: 'invisible'
+        });
+      }
+      
+      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber}`;
+      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, window.recaptchaVerifier);
+      window.confirmationResult = confirmation;
+      
+      setOtpDigits(['', '', '', '', '', '']);
+      setPhoneStep('enter_otp');
+      setTimeout(() => {
+        otpInputRefs.current[0]?.focus();
+      }, 150);
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.message || 'Failed to send OTP. Try again.');
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle OTP digit changes
@@ -80,30 +112,47 @@ export const AuthScreen: React.FC = () => {
     setIsLoading(true);
     setErrorMsg('');
     try {
+      if (!window.confirmationResult) throw new Error("No confirmation result");
+      const result = await window.confirmationResult.confirm(code);
+      const user = result.user;
+      
       await login({
-        identifier: `+91 ${phoneNumber}`,
+        identifier: user.phoneNumber || `+91${phoneNumber}`,
         password: code,
         role: selectedPortal,
         authProvider: 'phone'
       });
     } catch (err: any) {
-      setErrorMsg('Verification failed. Please retry.');
+      console.error(err);
+      setErrorMsg('Verification failed. Invalid OTP.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Mock Social Login
-  const handleSocialLogin = async (provider: 'google' | 'apple') => {
+  // Social Login
+  const handleSocialLogin = async (providerName: 'google' | 'apple') => {
     setIsLoading(true);
+    setErrorMsg('');
     try {
+      let provider;
+      if (providerName === 'google') {
+        provider = new GoogleAuthProvider();
+      } else {
+        provider = new OAuthProvider('apple.com');
+      }
+      
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
       await login({
-        identifier: `user@${provider}.com`,
+        identifier: user.email || user.uid,
         role: selectedPortal,
-        authProvider: provider as any
+        authProvider: providerName
       });
     } catch (err: any) {
-      setErrorMsg(`${provider} login failed.`);
+      console.error(err);
+      setErrorMsg(`${providerName} login failed: ${err.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -247,8 +296,9 @@ export const AuthScreen: React.FC = () => {
                   disabled={isLoading}
                   className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-[0_0_20px_rgba(37,99,235,0.2)] transition-all flex items-center justify-center gap-2 active:scale-98"
                 >
-                  Send OTP Code
+                  {isLoading ? 'Sending...' : 'Send OTP Code'}
                 </button>
+                <div id="recaptcha-container" className="flex justify-center mt-2"></div>
               </form>
             </div>
           ) : (

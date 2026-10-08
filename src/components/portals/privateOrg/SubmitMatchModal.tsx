@@ -3,7 +3,7 @@ import { useAypo } from '../../../context/AypoContext';
 import { X, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const SubmitMatchModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
-  const { visibleCases, storageService, setAuditLogs } = useAypo() as any;
+  const { visibleCases, storageService, setAuditLogs, updateCaseStatus } = useAypo() as any;
 
   const missingCases = visibleCases.filter((c: any) => c.status === 'REPORTED_MISSING');
   const foundCases = visibleCases.filter((c: any) => c.status !== 'REPORTED_MISSING' && c.status !== 'REUNITED');
@@ -15,11 +15,22 @@ export const SubmitMatchModal: React.FC<{ isOpen: boolean; onClose: () => void }
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMissingId || !selectedFoundId) return;
 
     setSubmitted(true);
+    try {
+      await updateCaseStatus(
+        selectedMissingId, 
+        'FOUND_UNVERIFIED', 
+        'Field Observation Match', 
+        `Match proposed with Found Case ${selectedFoundId}. Rationale: ${rationale}`
+      );
+    } catch (err) {
+      console.error(err);
+    }
+    
     setTimeout(() => {
       setSubmitted(false);
       onClose();

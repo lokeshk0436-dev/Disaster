@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAypo } from '../../../context/AypoContext';
 import { CommandOverview } from './CommandOverview';
 import { VerificationCenter } from './VerificationCenter';
@@ -7,6 +7,7 @@ import { DuplicateDetection } from './DuplicateDetection';
 import { AnalyticsView } from './AnalyticsView';
 import { DisasterMap } from '../../common/DisasterMap';
 import { CaseCard } from '../../common/CaseCard';
+import { BroadcastAlertModal } from './BroadcastAlertModal';
 import { 
   Landmark, 
   ShieldCheck, 
@@ -17,7 +18,8 @@ import {
   Database, 
   Activity,
   Layers,
-  LogOut
+  LogOut,
+  Radio
 } from 'lucide-react';
 
 export const GovernmentPortal: React.FC<{ onOpenAuditLogs: () => void; onOpenQueue: () => void }> = ({
@@ -35,10 +37,12 @@ export const GovernmentPortal: React.FC<{ onOpenAuditLogs: () => void; onOpenQue
     logout
   } = useAypo();
 
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Top Main Navigation (Replaces old Navbar) */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-200 pb-4 w-full">
+      <div className="flex flex-col 2xl:flex-row flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4 w-full">
         {/* Brand Logo */}
         <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer pr-4">
           <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-md">
@@ -47,7 +51,7 @@ export const GovernmentPortal: React.FC<{ onOpenAuditLogs: () => void; onOpenQue
           <span className="text-xl font-extrabold tracking-tight text-gray-900 hidden lg:block">AYPO</span>
         </div>
 
-        <div className="flex flex-1 items-center justify-between w-full overflow-x-auto bg-gray-50 p-1.5 rounded-2xl border border-gray-200">
+        <div className="flex flex-1 items-center justify-center flex-wrap w-full bg-gray-50 p-1.5 rounded-2xl border border-gray-200 gap-1">
           {[
             { id: 'dashboard', label: 'Command Overview', icon: Landmark },
             { id: 'verification', label: 'Verification Center', icon: ShieldCheck },
@@ -63,7 +67,7 @@ export const GovernmentPortal: React.FC<{ onOpenAuditLogs: () => void; onOpenQue
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-2 px-2 sm:px-4 py-2.5 rounded-xl text-[12px] font-bold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-1.5 px-2 sm:px-3 py-2.5 rounded-xl text-[12px] font-bold transition-all min-w-[140px] whitespace-nowrap ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'text-gray-600 hover:text-blue-600 hover:bg-white'
@@ -76,7 +80,7 @@ export const GovernmentPortal: React.FC<{ onOpenAuditLogs: () => void; onOpenQue
           })}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-center">
           {syncQueue.length > 0 && (
             <button
               onClick={onOpenQueue}
@@ -86,6 +90,14 @@ export const GovernmentPortal: React.FC<{ onOpenAuditLogs: () => void; onOpenQue
               <span className="hidden sm:inline">Offline Queue ({syncQueue.length})</span>
             </button>
           )}
+
+          <button
+            onClick={() => setIsAlertOpen(true)}
+            className="flex-shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-bold text-[13px] shadow-sm transition-all"
+          >
+            <Radio className="w-4 h-4 text-red-600" />
+            <span className="hidden sm:inline">Broadcast Alert</span>
+          </button>
 
           <button
             onClick={onOpenAuditLogs}
@@ -137,6 +149,11 @@ export const GovernmentPortal: React.FC<{ onOpenAuditLogs: () => void; onOpenQue
           </div>
         </div>
       )}
+
+      <BroadcastAlertModal 
+        isOpen={isAlertOpen} 
+        onClose={() => setIsAlertOpen(false)} 
+      />
     </div>
   );
 };

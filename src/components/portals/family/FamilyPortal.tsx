@@ -66,7 +66,7 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
           <span className="text-xl font-extrabold tracking-tight text-gray-900 hidden lg:block">AYPO</span>
         </div>
 
-        <div className="flex flex-1 items-center justify-between w-full overflow-x-auto bg-gray-50 p-1.5 rounded-2xl border border-gray-200">
+        <div className="flex flex-1 items-center justify-center flex-wrap xl:flex-nowrap w-full bg-gray-50 p-1.5 rounded-2xl border border-gray-200 gap-1">
           {[
             { id: 'dashboard', label: 'Family Dashboard', icon: Users },
             { id: 'search', label: 'Search Family Member', icon: Search },
@@ -80,14 +80,14 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-[13px] font-bold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 lg:px-4 py-2.5 rounded-xl text-[13px] font-bold transition-all min-w-[140px] whitespace-nowrap ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'text-gray-600 hover:text-blue-600 hover:bg-white'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-500'}`} />
-                <span className="hidden sm:inline">{tab.label}</span>
+                <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                <span className="inline">{tab.label}</span>
               </button>
             );
           })}
@@ -215,12 +215,18 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
                   <div className="text-sm font-bold text-gray-900">Ramesh Kumar (Husband)</div>
                   <div className="text-xs text-gray-500 mt-0.5">Location: <span className="text-green-600 font-semibold">Safe at Home</span></div>
                 </div>
+                <a href="https://www.google.com/maps/search/?api=1&query=RS+Puram+Coimbatore" target="_blank" rel="noopener noreferrer" title="Get Directions" className="p-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors">
+                  <MapPin className="w-4 h-4" />
+                </a>
               </div>
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
                 <div>
                   <div className="text-sm font-bold text-gray-900">Lakshmi (Mother)</div>
                   <div className="text-xs text-gray-500 mt-0.5">Location: <span className="text-orange-600 font-semibold">Relief Camp 01</span></div>
                 </div>
+                <a href="https://www.google.com/maps/search/?api=1&query=PSG+Tech+Convention+Ground+Coimbatore" target="_blank" rel="noopener noreferrer" title="Get Directions" className="p-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors">
+                  <MapPin className="w-4 h-4" />
+                </a>
               </div>
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
                 <div>
@@ -246,7 +252,7 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
             </div>
 
             <div className="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory hide-scrollbar">
-              {visibleCases.filter(c => c.reporterName === currentUser?.name || c.reporterPhone === currentUser?.identifier).slice(0, 8).map(c => (
+              {visibleCases.filter(c => c.reporterName === currentUser?.name || c.reporterContact === currentUser?.phone).slice(0, 8).map(c => (
                 <div key={c.id} className="min-w-[320px] sm:min-w-[360px] max-w-[400px] snap-center flex-shrink-0">
                   <CaseCard
                     caseRecord={c}
