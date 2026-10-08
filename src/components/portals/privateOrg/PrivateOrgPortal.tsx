@@ -47,7 +47,7 @@ export const PrivateOrgPortal: React.FC<{ onOpenQueue: () => void }> = ({ onOpen
           <span className="text-xl font-extrabold tracking-tight text-gray-900 hidden lg:block">AYPO</span>
         </div>
 
-        <div className="flex flex-1 items-center justify-between w-full overflow-x-auto bg-gray-50 p-1.5 rounded-2xl border border-gray-200">
+        <div className="flex flex-1 items-center justify-start xl:justify-center overflow-x-auto hide-scrollbar w-full bg-gray-50 p-1.5 rounded-2xl border border-gray-200 gap-1">
           {[
             { id: 'dashboard', label: 'Field Operations', icon: HeartHandshake },
             { id: 'assigned', label: 'Assigned Cases', icon: Building2 },
