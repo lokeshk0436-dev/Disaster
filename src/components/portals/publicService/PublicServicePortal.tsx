@@ -17,7 +17,8 @@ import {
   ChevronRight,
   ShieldCheck,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  LogOut
 } from 'lucide-react';
 
 export const PublicServicePortal: React.FC<{ onOpenQueue: () => void }> = ({ onOpenQueue }) => {
@@ -28,7 +29,8 @@ export const PublicServicePortal: React.FC<{ onOpenQueue: () => void }> = ({ onO
     setSelectedCaseId, 
     updateCaseStatus, 
     syncQueue, 
-    connectivity 
+    connectivity,
+    logout
   } = useAypo();
 
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -45,9 +47,17 @@ export const PublicServicePortal: React.FC<{ onOpenQueue: () => void }> = ({ onO
 
   return (
     <div className="space-y-6">
-      {/* Sub-navigation tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
-        <div className="flex items-center gap-1.5 overflow-x-auto">
+      {/* Top Main Navigation (Replaces old Navbar) */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-200 pb-4 w-full">
+        {/* Brand Logo */}
+        <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer pr-4">
+          <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-md">
+             <Activity className="w-5 h-5" />
+          </div>
+          <span className="text-xl font-extrabold tracking-tight text-gray-900 hidden lg:block">AYPO</span>
+        </div>
+
+        <div className="flex flex-1 items-center justify-between w-full overflow-x-auto bg-gray-50 p-1.5 rounded-2xl border border-gray-200">
           {[
             { id: 'dashboard', label: 'Triage Overview', icon: Activity },
             { id: 'cases', label: 'All Authorized Cases', icon: Ambulance },
@@ -61,14 +71,14 @@ export const PublicServicePortal: React.FC<{ onOpenQueue: () => void }> = ({ onO
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-[13px] font-bold transition-all ${
                   isActive
-                    ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-white'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
-                <span>{tab.label}</span>
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             );
           })}
@@ -78,19 +88,26 @@ export const PublicServicePortal: React.FC<{ onOpenQueue: () => void }> = ({ onO
           {syncQueue.length > 0 && (
             <button
               onClick={onOpenQueue}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-[13px] shadow transition-all"
             >
-              <Database className="w-3.5 h-3.5" />
-              <span>Offline Queue ({syncQueue.length})</span>
+              <Database className="w-4 h-4" />
+              <span className="hidden sm:inline">Offline Queue ({syncQueue.length})</span>
             </button>
           )}
 
           <button
             onClick={() => setIsRegisterModalOpen(true)}
-            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition-all hover:scale-102"
+            className="flex-shrink-0 flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-5 py-2.5 rounded-xl text-[13px] shadow-md transition-all"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Register Affected Person</span>
+            <span className="hidden sm:inline">Register Person</span>
+          </button>
+          <button
+            onClick={logout}
+            className="flex-shrink-0 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-bold px-5 py-2.5 rounded-xl text-[13px] shadow-md transition-all"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Sign Out</span>
           </button>
         </div>
       </div>

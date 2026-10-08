@@ -34,20 +34,14 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#070D1E] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-slate-950">
-      {/* Top Navbar */}
-      <Navbar
-        onOpenOfflineQueue={() => setIsQueueOpen(true)}
-        onOpenAuditLogs={() => setIsAuditLogsOpen(true)}
-        onOpenHelplines={() => setIsHelplinesOpen(true)}
-        onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
-      />
+    <div className="min-h-screen bg-dot-grid text-gray-900 flex flex-col font-sans selection:bg-blue-500 selection:text-white">
+
 
       {/* Telemetry & Connectivity Bar */}
       <ConnectivityBar onOpenQueue={() => setIsQueueOpen(true)} />
 
       {/* Main Role-Based Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main id="portals" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 scroll-mt-24">
         {currentRole === 'FAMILY' && (
           <FamilyPortal
             onOpenHelplines={() => setIsHelplinesOpen(true)}

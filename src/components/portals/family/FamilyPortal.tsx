@@ -18,7 +18,9 @@ import {
   Sparkles, 
   AlertTriangle,
   Clock,
-  ArrowRight
+  ArrowRight,
+  LogOut,
+  Activity
 } from 'lucide-react';
 
 interface FamilyPortalProps {
@@ -37,7 +39,9 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
     setActiveTab, 
     selectedCaseId, 
     setSelectedCaseId, 
-    confirmFamilyReunification 
+    confirmFamilyReunification,
+    logout,
+    currentUser
   } = useAypo();
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -52,9 +56,17 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Sub-navigation tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
-        <div className="flex items-center gap-1.5 overflow-x-auto">
+      {/* Top Main Navigation (Replaces old Navbar) */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-200 pb-4 w-full">
+        {/* Brand Logo */}
+        <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer pr-4">
+          <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-md">
+             <Activity className="w-5 h-5" />
+          </div>
+          <span className="text-xl font-extrabold tracking-tight text-gray-900 hidden lg:block">AYPO</span>
+        </div>
+
+        <div className="flex flex-1 items-center justify-between w-full overflow-x-auto bg-gray-50 p-1.5 rounded-2xl border border-gray-200">
           {[
             { id: 'dashboard', label: 'Family Dashboard', icon: Users },
             { id: 'search', label: 'Search Family Member', icon: Search },
@@ -68,27 +80,36 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-[13px] font-bold transition-all ${
                   isActive
-                    ? 'bg-cyan-500 text-slate-950 shadow-md font-black'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-white'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
-                <span>{tab.label}</span>
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Primary Action Button */}
-        <button
-          onClick={() => setIsReportModalOpen(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-lg shadow-orange-500/20 transition-all hover:scale-102"
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>Report Missing Person</span>
-        </button>
+        {/* Primary Action Button & Sign Out */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsReportModalOpen(true)}
+            className="flex-shrink-0 flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-xl text-[13px] shadow-md transition-all"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span className="hidden sm:inline">Report Missing</span>
+          </button>
+          <button
+            onClick={logout}
+            className="flex-shrink-0 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-bold px-5 py-2.5 rounded-xl text-[13px] shadow-md transition-all"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Sign Out</span>
+          </button>
+        </div>
       </div>
 
       {/* High-Priority Family Notification Banner */}
@@ -144,22 +165,88 @@ export const FamilyPortal: React.FC<FamilyPortalProps> = ({
             openBeds={openBedsCount}
           />
 
+          {/* SECURE PERSONAL DETAILS WIDGET */}
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <ShieldCheck className="w-6 h-6 text-emerald-600" />
+                  Secure Personal Identity
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">Your data is cryptographically secured and strictly visible only to you and authorized rescue authorities.</p>
+              </div>
+              <div className="px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-100 flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                VERIFIED CITIZEN
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <div className="text-xs font-bold text-gray-500 uppercase mb-1">Primary Name</div>
+                <div className="text-base font-bold text-gray-900">Kavitha Ramesh</div>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <div className="text-xs font-bold text-gray-500 uppercase mb-1">Age & Gender</div>
+                <div className="text-base font-bold text-gray-900">34 Yrs • Female</div>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <div className="text-xs font-bold text-gray-500 uppercase mb-1">Govt ID (Aadhaar)</div>
+                <div className="text-base font-mono font-bold text-gray-900 flex items-center gap-2">
+                  5942 8192 4912
+                </div>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <div className="text-xs font-bold text-gray-500 uppercase mb-1">Marital Status</div>
+                <div className="text-base font-bold text-gray-900">Married</div>
+              </div>
+            </div>
+          </div>
+
+          {/* FAMILY MEMBERS LOCATIONS WIDGET */}
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8 mt-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-blue-600" />
+              Registered Family Members
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-bold text-gray-900">Ramesh Kumar (Husband)</div>
+                  <div className="text-xs text-gray-500 mt-0.5">Location: <span className="text-green-600 font-semibold">Safe at Home</span></div>
+                </div>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-bold text-gray-900">Lakshmi (Mother)</div>
+                  <div className="text-xs text-gray-500 mt-0.5">Location: <span className="text-orange-600 font-semibold">Relief Camp 01</span></div>
+                </div>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-bold text-gray-900">Aarav (Son)</div>
+                  <div className="text-xs text-gray-500 mt-0.5">Location: <span className="text-blue-600 font-semibold">With You</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Featured Case Cards / Recent Verified Updates */}
-          <div className="space-y-4">
+          <div className="space-y-4 pt-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-black text-white flex items-center gap-2">
-                <Clock className="w-4 h-4 text-cyan-400" /> Recent Case Updates & Verified Sightings
+              <h3 className="text-base font-black text-gray-900 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-blue-600" /> My Reported Cases
               </h3>
               <button
                 onClick={() => setActiveTab('search')}
-                className="text-xs text-cyan-400 hover:text-cyan-300 font-bold flex items-center gap-1"
+                className="text-xs text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1"
               >
-                View all cases <ArrowRight className="w-3.5 h-3.5" />
+                Search all cases <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
             <div className="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory hide-scrollbar">
-              {visibleCases.slice(0, 8).map(c => (
+              {visibleCases.filter(c => c.reporterName === currentUser?.name || c.reporterPhone === currentUser?.identifier).slice(0, 8).map(c => (
                 <div key={c.id} className="min-w-[320px] sm:min-w-[360px] max-w-[400px] snap-center flex-shrink-0">
                   <CaseCard
                     caseRecord={c}

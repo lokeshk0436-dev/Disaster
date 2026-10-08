@@ -4,142 +4,46 @@
 
 @layer base {
   :root {
-    --color-bg: #030508;
-    --color-surface: #090C14;
-    --color-card: #0F131D;
-    --color-border: #1E2536;
-    --color-primary: #00F0FF;
-    --color-accent: #38BDF8;
-    --color-success: #00E599;
-    --color-warning: #FFB800;
-    --color-danger: #FF2A55;
+    --color-bg: #f9fafb;
+    --color-text: #111827;
   }
 
   body {
-    background-color: #030508;
-    color: #F8FAFC;
+    background-color: var(--color-bg);
+    color: var(--color-text);
     overflow-x: hidden;
-    font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
-/* Tactical Background Carbon Dot Grid Texture */
-.carbon-grid {
-  background-color: #030508;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-                    radial-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px);
-  background-size: 28px 28px;
-  background-position: 0 0, 14px 14px;
-}
-
-/* High Contrast Monochromatic Glass */
-.mono-glass {
-  background: rgba(12, 16, 24, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.mono-glass-hover:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.15);
-}
-
-/* Siri / Gemini AI Voice Glowing Pulsar */
-.siri-orb {
-  background: radial-gradient(circle at 35% 35%, #00F0FF 0%, #6366F1 45%, #EC4899 75%, #050508 100%);
-  animation: siriGlow 3s ease-in-out infinite alternate;
-}
-
-.voice-wave-bar {
-  width: 3.5px;
-  border-radius: 9999px;
-  background: linear-gradient(180deg, #00F0FF, #EC4899);
-  animation: voiceWave 1s ease-in-out infinite alternate;
-}
-
-/* Custom Emergency Glow & Glass Classes */
-.emergency-glass {
-  background: rgba(10, 14, 22, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.emergency-glass-danger {
-  background: rgba(45, 8, 16, 0.88);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 42, 85, 0.4);
-}
-
-.emergency-glass-warning {
-  background: rgba(45, 28, 8, 0.88);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 184, 0, 0.4);
-}
-
-.emergency-glass-success {
-  background: rgba(8, 45, 28, 0.88);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 229, 153, 0.4);
-}
-
-.badge-glow {
-  box-shadow: 0 0 14px currentColor;
-}
-
-/* High Contrast Emergency Mode Overrides */
-body.emergency-mode {
-  background-color: #000000 !important;
-}
-
-body.emergency-mode .emergency-glass {
-  background: #09090C !important;
-  border: 2px solid #FFFFFF !important;
-}
-
-/* Custom Tactical Monochromatic Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #05070E;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #1E2536;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #00F0FF;
+/* Light Dot Grid Background */
+.bg-dot-grid {
+  background-color: #f9fafb;
+  background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* Hide scrollbar for horizontal scrolling containers */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+  display: none;
 }
 
-/* Animated Grid Background */
-@keyframes backgroundPan {
-  from {
-    background-position: 0% 0%;
-  }
-  to {
-    background-position: -200% 0%;
-  }
+/* Pixel Art Clouds Background classes for the hero image */
+.bg-pixel-clouds {
+  background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-.bg-animated-grid {
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
-  animation: backgroundPan 30s linear infinite;
+.bg-pixel-clouds::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/pixel-weave.png');
+  opacity: 0.3;
+  mix-blend-mode: overlay;
 }
-

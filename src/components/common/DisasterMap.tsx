@@ -46,6 +46,13 @@ export const DisasterMap: React.FC = () => {
 
       markersLayerRef.current = L.layerGroup().addTo(map);
       mapInstanceRef.current = map;
+
+      // Fix glitch where map container size isn't fully computed
+      setTimeout(() => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize();
+        }
+      }, 500);
     }
 
     return () => {
