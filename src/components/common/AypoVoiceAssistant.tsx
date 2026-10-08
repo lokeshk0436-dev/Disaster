@@ -89,43 +89,59 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
 
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
+        // Main Assistant Recognition
         const recognition = new SpeechRecognition();
         recognition.continuous = false;
         recognition.interimResults = true;
         recognition.lang = 'en-US';
 
-        recognition.onstart = () => {
-          setIsListening(true);
-        };
-
+        recognition.onstart = () => setIsListening(true);
         recognition.onresult = (event: any) => {
           const current = event.resultIndex;
           const text = event.results[current][0].transcript;
           setTranscript(text);
-
           if (event.results[current].isFinal) {
             handleProcessCommand(text);
           }
         };
-
-        recognition.onerror = () => {
-          setIsListening(false);
-        };
-
-        recognition.onend = () => {
-          setIsListening(false);
-        };
-
+        recognition.onerror = () => setIsListening(false);
+        recognition.onend = () => setIsListening(false);
         recognitionRef.current = recognition;
+
+        // Wake Word Recognition (Passive Listener)
+        const wakeWordRec = new SpeechRecognition();
+        wakeWordRec.continuous = true;
+        wakeWordRec.interimResults = true;
+        wakeWordRec.lang = 'en-US';
+        
+        wakeWordRec.onresult = (event: any) => {
+          const current = event.resultIndex;
+          const text = event.results[current][0].transcript.toLowerCase();
+          // The magic wake words: "hey aypo" or "emergency"
+          if (text.includes('hey aypo') || text.includes('emergency')) {
+            if (!isOpen) {
+              handleOpen();
+              speakText("Emergency Wake Word detected. I am listening. What is your emergency?");
+              setTimeout(() => toggleListening(), 2000);
+            }
+          }
+        };
+        // Restart the wake word listener if it dies silently
+        wakeWordRec.onend = () => {
+          if (!isOpen) {
+             try { wakeWordRec.start(); } catch (e) {}
+          }
+        };
+        
+        // Start passive listening on mount
+        try { wakeWordRec.start(); } catch (e) {}
       }
     }
 
     return () => {
-      if (synthRef.current) {
-        synthRef.current.cancel();
-      }
+      if (synthRef.current) synthRef.current.cancel();
     };
-  }, []);
+  }, [isOpen]);
 
   // Auto scroll chat
   useEffect(() => {

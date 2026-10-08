@@ -3,6 +3,7 @@ import { useAypo } from '../../context/AypoContext';
 import { UserRole } from '../../types';
 import { auth } from '../../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
+import { Capacitor } from '@capacitor/core';
 import { 
   Users, 
   Ambulance, 
@@ -247,32 +248,36 @@ export const AuthScreen: React.FC = () => {
 
           {phoneStep === 'enter_phone' ? (
             <div className="space-y-6 animate-fade-in">
-              {/* Social Logins */}
-              <div className="space-y-3">
-                <button
-                  onClick={() => handleSocialLogin('google')}
-                  disabled={isLoading}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-xl text-sm font-bold text-gray-700 transition-all shadow-sm"
-                >
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-                  Continue with Google
-                </button>
-                <button
-                  onClick={() => handleSocialLogin('apple')}
-                  disabled={isLoading}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-900 border border-gray-900 hover:bg-gray-800 rounded-xl text-sm font-bold text-white transition-all shadow-sm"
-                >
-                  <img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="Apple" className="w-5 h-5 invert" />
-                  Continue with Apple
-                </button>
-              </div>
+              {/* Social Logins - Hidden on Native Mobile to prevent WebView redirect errors */}
+              {!Capacitor.isNativePlatform() && (
+                <>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => handleSocialLogin('google')}
+                      disabled={isLoading}
+                      className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-xl text-sm font-bold text-gray-700 transition-all shadow-sm"
+                    >
+                      <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+                      Continue with Google
+                    </button>
+                    <button
+                      onClick={() => handleSocialLogin('apple')}
+                      disabled={isLoading}
+                      className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-900 border border-gray-900 hover:bg-gray-800 rounded-xl text-sm font-bold text-white transition-all shadow-sm"
+                    >
+                      <img src="https://www.svgrepo.com/show/511330/apple-173.svg" alt="Apple" className="w-5 h-5 invert" />
+                      Continue with Apple
+                    </button>
+                  </div>
 
-              {/* Divider */}
-              <div className="relative flex items-center py-2">
-                <div className="flex-grow border-t border-gray-200"></div>
-                <span className="flex-shrink-0 mx-4 text-xs font-bold text-gray-400 uppercase">Or log in with</span>
-                <div className="flex-grow border-t border-gray-200"></div>
-              </div>
+                  {/* Divider */}
+                  <div className="relative flex items-center py-2">
+                    <div className="flex-grow border-t border-gray-200"></div>
+                    <span className="flex-shrink-0 mx-4 text-xs font-bold text-gray-400 uppercase">Or log in with</span>
+                    <div className="flex-grow border-t border-gray-200"></div>
+                  </div>
+                </>
+              )}
 
               {/* Phone Form */}
               <form onSubmit={handleSendOtp} className="space-y-4">
