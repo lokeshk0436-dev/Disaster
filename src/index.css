@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #070D1E;
+    --color-surface: #0E1838;
+    --color-card: #132247;
+    --color-border: #223769;
+    --color-primary: #0077B6;
+    --color-accent: #00B4D8;
+    --color-success: #2A9D8F;
+    --color-warning: #FB8500;
+    --color-danger: #E63946;
+  }
+
+  body {
+    background-color: #070D1E;
+    color: #F1F5F9;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Emergency Glow & Glass Classes */
+.emergency-glass {
+  background: rgba(17, 29, 63, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(72, 202, 228, 0.15);
+}
+
+.emergency-glass-danger {
+  background: rgba(45, 10, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(230, 57, 70, 0.35);
+}
+
+.emergency-glass-warning {
+  background: rgba(45, 30, 10, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(251, 133, 0, 0.35);
+}
+
+.emergency-glass-success {
+  background: rgba(10, 45, 35, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(42, 157, 143, 0.35);
+}
+
+.badge-glow {
+  box-shadow: 0 0 12px currentColor;
+}
+
+/* High Contrast Emergency Mode Overrides */
+body.emergency-mode {
+  background-color: #030712 !important;
+}
+
+body.emergency-mode .emergency-glass {
+  background: #111827 !important;
+  border: 2px solid #38BDF8 !important;
+}
+
+/* Custom Tactical Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B132B;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2E3D66;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00B4D8;
+}
