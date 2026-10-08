@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAypo } from '../../../context/AypoContext';
+import { PhotoVerificationField } from '../../common/PhotoVerificationField';
 import { X, Upload, AlertCircle, CheckCircle, MapPin, User, Phone, Navigation } from 'lucide-react';
 import { locationService } from '../../../services/locationService';
 import { LocationMapPreview } from '../../common/LocationMapPreview';
@@ -130,6 +131,14 @@ export const ReportMissingModal: React.FC<{ isOpen: boolean; onClose: () => void
                   <option value="Other">Other</option>
                 </select>
               </div>
+            </div>
+
+            {/* Photo Verification Upload */}
+            <div className="mt-4 mb-2">
+              <PhotoVerificationField 
+                onPhotoCaptured={(url) => setPhotoUrl(url)} 
+                label="Missing Person Identification Photo"
+              />
             </div>
           </div>
 

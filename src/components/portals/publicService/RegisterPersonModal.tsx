@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAypo } from '../../../context/AypoContext';
+import { PhotoVerificationField } from '../../common/PhotoVerificationField';
 import { CaseStatus, TriageLevel } from '../../../types';
 import { X, Ambulance, AlertCircle, HeartPulse, Building2, MapPin, Shield, Navigation } from 'lucide-react';
 import { locationService } from '../../../services/locationService';
@@ -128,6 +129,14 @@ export const RegisterPersonModal: React.FC<{ isOpen: boolean; onClose: () => voi
                   <option value="Unknown">Unknown</option>
                 </select>
               </div>
+            </div>
+
+            {/* Photo Verification Upload */}
+            <div className="mt-4 mb-2">
+              <PhotoVerificationField 
+                onPhotoCaptured={(url) => setPhotoUrl(url)} 
+                label="Official Patient / Sheltee Photo"
+              />
             </div>
           </div>
 

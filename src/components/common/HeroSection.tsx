@@ -42,8 +42,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="absolute inset-0 bg-gradient-to-b from-gray-950/80 via-gray-900/60 to-gray-50 z-10 pointer-events-none"></div>
 
       {/* Hero Content */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-12 flex flex-col items-center">
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-6 flex flex-col items-center">
         
+        {/* Emergency Broadcast Banner */}
+        <div className="w-full max-w-3xl mb-8 bg-rose-500/10 border border-rose-500/30 rounded-2xl p-1 shadow-[0_0_25px_rgba(225,29,72,0.15)] animate-pulse">
+          <div className="bg-rose-500/20 rounded-xl px-4 py-3 flex flex-col sm:flex-row items-center gap-3 backdrop-blur-md">
+            <div className="bg-rose-500 text-white rounded-lg p-2 shadow-lg shadow-rose-500/30 flex-shrink-0">
+              <AlertTriangle className="w-5 h-5 animate-bounce" />
+            </div>
+            <div className="text-left flex-1">
+              <h3 className="text-rose-100 font-black text-sm uppercase tracking-wider">Priority Emergency Broadcast</h3>
+              <p className="text-rose-200 text-sm font-medium">SEVERE CATEGORY 5 HURRICANE APPROACHING. Mandatory evacuation orders in effect for coastal zones. Please report all missing persons immediately.</p>
+            </div>
+          </div>
+        </div>
+
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-blue-200 text-xs font-bold uppercase tracking-widest mb-6">
           <Activity className="w-4 h-4 animate-pulse" />
           Live Disaster Telemetry Active

@@ -50,6 +50,7 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  const [wakeWordEnabled, setWakeWordEnabled] = useState(false);
 
   const handleOpen = () => {
     if (controlledOnOpen) controlledOnOpen();
@@ -117,9 +118,10 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
         wakeWordRec.onresult = (event: any) => {
           const current = event.resultIndex;
           const text = event.results[current][0].transcript.toLowerCase();
-          // The magic wake words: "hey aypo" or "emergency"
-          if (text.includes('hey aypo') || text.includes('emergency')) {
+          // The magic wake words: "hey aypo", "emergency", "help me"
+          if (text.includes('hey') || text.includes('aypo') || text.includes('emergency') || text.includes('help')) {
             if (!isOpen) {
+              setWakeWordEnabled(false); // turn off to avoid echo
               handleOpen();
               speakText("Emergency Wake Word detected. I am listening. What is your emergency?");
               setTimeout(() => toggleListening(), 2000);
@@ -128,20 +130,27 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
         };
         // Restart the wake word listener if it dies silently
         wakeWordRec.onend = () => {
-          if (!isOpen) {
+          if (!isOpen && wakeWordEnabled) {
              try { wakeWordRec.start(); } catch (e) {}
           }
         };
         
-        // Start passive listening on mount
-        try { wakeWordRec.start(); } catch (e) {}
+        // Start passive listening on mount if enabled
+        if (wakeWordEnabled && !isOpen) {
+          try { wakeWordRec.start(); } catch (e) {}
+        }
+
+        return () => {
+          try { wakeWordRec.stop(); } catch(e) {}
+          if (synthRef.current) synthRef.current.cancel();
+        };
       }
     }
 
     return () => {
       if (synthRef.current) synthRef.current.cancel();
     };
-  }, [isOpen]);
+  }, [isOpen, wakeWordEnabled]);
 
   // Auto scroll chat
   useEffect(() => {
@@ -297,6 +306,21 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
                 Ask AYPO Assistant
               </div>
             </div>
+          </button>
+        )}
+        
+        {/* Wake word toggle */}
+        {!isOpen && (
+          <button
+            onClick={() => setWakeWordEnabled(!wakeWordEnabled)}
+            className={`p-3 rounded-full border shadow-xl transition-all ${
+              wakeWordEnabled 
+                ? 'bg-rose-500/20 text-rose-400 border-rose-500/40 animate-pulse' 
+                : 'bg-black/80 text-slate-400 border-white/10 hover:text-white'
+            }`}
+            title="Toggle Hands-Free Wake Word (Hey AYPO)"
+          >
+            {wakeWordEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
           </button>
         )}
       </div>

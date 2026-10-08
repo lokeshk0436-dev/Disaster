@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAypo } from '../../context/AypoContext';
+import { AypoLogo } from '../common/AypoLogo';
 import { UserRole } from '../../types';
 import { auth } from '../../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
@@ -176,12 +177,7 @@ export const AuthScreen: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-950/80 via-gray-900/60 to-gray-950/90 z-10 pointer-events-none"></div>
 
         <div className="relative z-20">
-          <div className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-gray-900 shadow-xl">
-               <Activity className="w-6 h-6" />
-            </div>
-            <span className="text-3xl font-extrabold tracking-tight text-white">AYPO</span>
-          </div>
+          <AypoLogo size="lg" theme="dark" />
         </div>
 
         <div className="relative z-20 max-w-lg mb-12">
@@ -199,11 +195,8 @@ export const AuthScreen: React.FC = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-gray-50">
         <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
           
-          {/* Mobile Logo (Visible only on small screens) */}
           <div className="lg:hidden flex justify-center mb-8">
-            <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-xl">
-               <Activity className="w-6 h-6" />
-            </div>
+            <AypoLogo size="lg" hideTextAlways />
           </div>
 
           <div className="text-center mb-8">

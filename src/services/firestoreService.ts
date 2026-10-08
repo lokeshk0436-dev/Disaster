@@ -1,6 +1,6 @@
 import { db } from '../config/firebase';
-import { collection, doc, setDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { AYPOCase, AuditLog, NotificationItem } from '../types';
+import { collection, doc, setDoc, onSnapshot, query } from 'firebase/firestore';
+import { AYPOCase, AuditLog } from '../types';
 
 export const firestoreService = {
   // CASES

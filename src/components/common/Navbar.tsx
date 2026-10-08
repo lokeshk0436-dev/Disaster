@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAypo } from '../../context/AypoContext';
+import { AypoLogo } from './AypoLogo';
 import { 
   Menu,
   Activity
@@ -25,12 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="w-full z-50 bg-transparent pt-6 pb-4 px-6 sm:px-12 flex items-center justify-between border-b border-gray-100">
       
       {/* Brand & Tagline */}
-      <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer">
-        <div className="w-9 h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-md">
-           <Activity className="w-5 h-5" />
-        </div>
-        <span className="text-xl font-extrabold tracking-tight text-gray-900">AYPO</span>
-      </div>
+      <AypoLogo />
 
       {/* Center Nav Links (High Contrast) */}
       <div className="hidden md:flex items-center gap-10 text-[15px] font-bold text-black">

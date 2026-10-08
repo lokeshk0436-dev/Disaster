@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAypo } from '../../../context/AypoContext';
+import { AypoLogo } from '../../common/AypoLogo';
 import { ReportFoundModal } from './ReportFoundModal';
 import { SubmitMatchModal } from './SubmitMatchModal';
 import { ProvideFundsModal } from './ProvideFundsModal';
@@ -40,12 +41,7 @@ export const PrivateOrgPortal: React.FC<{ onOpenQueue: () => void }> = ({ onOpen
       {/* Top Main Navigation (Replaces old Navbar) */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-200 pb-4 w-full">
         {/* Brand Logo */}
-        <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer pr-4">
-          <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-md">
-             <Activity className="w-5 h-5" />
-          </div>
-          <span className="text-xl font-extrabold tracking-tight text-gray-900 hidden lg:block">AYPO</span>
-        </div>
+        <AypoLogo hideTextOnMobile className="pr-4" />
 
         <div className="flex flex-1 items-center justify-start xl:justify-center overflow-x-auto hide-scrollbar w-full bg-gray-50 p-1.5 rounded-2xl border border-gray-200 gap-1">
           {[

@@ -89,6 +89,48 @@ export const INITIAL_SHELTERS: Shelter[] = [
     foodStatus: 'ADEQUATE',
     waterStatus: 'ADEQUATE',
     medicalTeamPresent: false
+  },
+  {
+    id: 'SHELTER-04',
+    name: 'Govt Arts College Relief Camp',
+    sector: 'Race Course Sector',
+    location: 'Arts College Road, Coimbatore',
+    lat: 11.0025,
+    lng: 76.9723,
+    capacity: 600,
+    occupancy: 412,
+    contact: '+91 422 2100987',
+    foodStatus: 'CRITICAL',
+    waterStatus: 'ADEQUATE',
+    medicalTeamPresent: true
+  },
+  {
+    id: 'SHELTER-05',
+    name: 'Singanallur Bus Stand Temporary Hub',
+    sector: 'Singanallur Sector',
+    location: 'Singanallur Main Terminal',
+    lat: 10.9989,
+    lng: 77.0255,
+    capacity: 300,
+    occupancy: 295,
+    contact: '+91 422 2554432',
+    foodStatus: 'RESTOCKING',
+    waterStatus: 'RESTOCKING',
+    medicalTeamPresent: false
+  },
+  {
+    id: 'SHELTER-06',
+    name: 'Vadavalli Community Hall',
+    sector: 'Vadavalli Sector',
+    location: 'Marudhamalai Road, Vadavalli',
+    lat: 11.0332,
+    lng: 76.9011,
+    capacity: 250,
+    occupancy: 80,
+    contact: '+91 422 2420999',
+    foodStatus: 'ADEQUATE',
+    waterStatus: 'ADEQUATE',
+    medicalTeamPresent: true
   }
 ];
 
@@ -118,6 +160,32 @@ export const INITIAL_HOSPITALS: Hospital[] = [
     icuBedsAvailable: 2,
     bloodStockStatus: 'LOW_O_NEG',
     traumaSurgeonsOnDuty: 5
+  },
+  {
+    id: 'HOSP-03',
+    name: 'GKNM Hospital - Emergency Wing',
+    location: 'Avinashi Road, PN Palayam',
+    lat: 11.0118,
+    lng: 76.9851,
+    contact: '+91 422 2245000',
+    triageBedsTotal: 90,
+    triageBedsAvailable: 12,
+    icuBedsAvailable: 6,
+    bloodStockStatus: 'OPTIMAL',
+    traumaSurgeonsOnDuty: 4
+  },
+  {
+    id: 'HOSP-04',
+    name: 'KG Hospital Medical Camp',
+    location: 'Arts College Road',
+    lat: 11.0049,
+    lng: 76.9710,
+    contact: '+91 422 2222222',
+    triageBedsTotal: 150,
+    triageBedsAvailable: 45,
+    icuBedsAvailable: 1,
+    bloodStockStatus: 'CRITICAL',
+    traumaSurgeonsOnDuty: 10
   }
 ];
 
