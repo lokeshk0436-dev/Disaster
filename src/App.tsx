@@ -9,6 +9,7 @@ import { PublicInfoModal } from './components/common/PublicInfoModal';
 import { EmergencyFooter } from './components/common/EmergencyFooter';
 import { HelplinesDrawer } from './components/common/HelplinesDrawer';
 import { AypoVoiceAssistant } from './components/common/AypoVoiceAssistant';
+import { LanguageSelector } from './components/common/LanguageSelector';
 
 // Portals
 import { FamilyPortal } from './components/portals/family/FamilyPortal';
@@ -112,6 +113,7 @@ const AppContent: React.FC = () => {
 export default function App() {
   return (
     <AypoProvider>
+      <LanguageSelector />
       <AppContent />
     </AypoProvider>
   );

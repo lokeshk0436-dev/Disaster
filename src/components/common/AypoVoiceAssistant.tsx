@@ -87,6 +87,13 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       synthRef.current = window.speechSynthesis;
+      // Preload voices (Fixes Chrome/Safari voices loading empty initially)
+      if (synthRef.current) {
+        synthRef.current.getVoices();
+        synthRef.current.onvoiceschanged = () => {
+          synthRef.current?.getVoices();
+        };
+      }
 
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
@@ -101,17 +108,40 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
           const current = event.resultIndex;
           const text = event.results[current][0].transcript;
           setTranscript(text);
+          setInputQuery(text); // Live update the input box!
+          
           if (event.results[current].isFinal) {
-            handleProcessCommand(text);
+            setTimeout(() => {
+              if (text.trim().length > 0) {
+                 handleProcessCommand(text);
+              }
+            }, 500); // Small delay to let user read their transcribed text before it disappears
           }
         };
-        recognition.onerror = () => setIsListening(false);
+        recognition.onerror = (e: any) => {
+          setIsListening(false);
+          if (e.error === 'not-allowed') {
+            setMessages(prev => [...prev, {
+              id: `err-${Date.now()}`,
+              sender: 'assistant',
+              text: 'Microphone access denied! Please allow microphone permissions in your browser settings to speak to me.',
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }]);
+          } else if (e.error !== 'no-speech') {
+             setMessages(prev => [...prev, {
+              id: `err-${Date.now()}`,
+              sender: 'assistant',
+              text: `Microphone error: ${e.error}. Please try typing your emergency request below.`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }]);
+          }
+        };
         recognition.onend = () => setIsListening(false);
         recognitionRef.current = recognition;
 
         // Wake Word Recognition (Passive Listener)
         const wakeWordRec = new SpeechRecognition();
-        wakeWordRec.continuous = true;
+        wakeWordRec.continuous = false; // Must be false to force frequent polling in Chrome
         wakeWordRec.interimResults = true;
         wakeWordRec.lang = 'en-US';
         
@@ -131,10 +161,16 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
         // Restart the wake word listener if it dies silently
         wakeWordRec.onend = () => {
           if (!isOpen && wakeWordEnabled) {
-             try { wakeWordRec.start(); } catch (e) {}
+             setTimeout(() => {
+               try { wakeWordRec.start(); } catch (e) {}
+             }, 250);
           }
         };
         
+        wakeWordRec.onerror = (e: any) => {
+           console.log("Wake Word Rec Error:", e.error);
+        };
+
         // Start passive listening on mount if enabled
         if (wakeWordEnabled && !isOpen) {
           try { wakeWordRec.start(); } catch (e) {}
@@ -191,6 +227,12 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
     if (!recognitionRef.current) {
       alert('Speech recognition is not supported in this browser. Please type your query in the box below.');
       return;
+    }
+
+    // Prime the speech synthesis engine with a user gesture to bypass browser auto-play blocks
+    if (synthRef.current && !isListening) {
+      const prime = new SpeechSynthesisUtterance('');
+      synthRef.current.speak(prime);
     }
 
     if (isListening) {
@@ -299,11 +341,13 @@ export const AypoVoiceAssistant: React.FC<AypoVoiceAssistantProps> = ({
 
             <div className="text-left">
               <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-                <span>AI VOICE DISPATCH</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${wakeWordEnabled ? 'bg-rose-500 animate-pulse' : 'bg-cyan-400 animate-ping'}`} />
+                <span className={wakeWordEnabled ? 'text-rose-400' : 'text-cyan-400'}>
+                  {wakeWordEnabled ? 'WAKE WORD ACTIVE' : 'AI VOICE DISPATCH'}
+                </span>
               </div>
               <div className="text-xs font-black text-white group-hover:text-cyan-200 transition-colors">
-                Ask AYPO Assistant
+                {wakeWordEnabled ? 'Say "Hey AYPO" or "Help"' : 'Ask AYPO Assistant'}
               </div>
             </div>
           </button>
